@@ -187,22 +187,18 @@
 
     <script>
         function checkVisa() {
-            // Get the selected country
             var country = document.getElementById("country").value;
             var resultDiv = document.getElementById("result");
             
-            // Clear previous results
             resultDiv.textContent = "";
             resultDiv.className = "";
             
-            // Check if a country was selected
             if (!country) {
                 resultDiv.textContent = "Please select a country.";
                 resultDiv.className = "error";
                 return;
             }
             
-            // Determine the visa requirement message
             var message;
             switch(country) {
                 case "USA":
@@ -224,7 +220,6 @@
                     message = "Please select a valid country.";
             }
             
-            // Display the result
             resultDiv.textContent = message;
             resultDiv.className = "success";
         }
