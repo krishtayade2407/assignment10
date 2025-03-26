@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -96,6 +95,138 @@
             messageElem.innerText = "Visa application submitted successfully!";
             messageElem.className = "success";
             return true;
+        }
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visa Requirement Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+            text-align: center;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 4px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .error {
+            background-color: #ffdddd;
+            color: #d8000c;
+            border: 1px solid #d8000c;
+        }
+        .success {
+            background-color: #ddffdd;
+            color: #4F8A10;
+            border: 1px solid #4F8A10;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Visa Requirement Checker</h2>
+        <select id="country">
+            <option value="">Select a country</option>
+            <option value="USA">USA</option>
+            <option value="Canada">Canada</option>
+            <option value="India">India</option>
+            <option value="UK">UK</option>
+            <option value="Australia">Australia</option>
+        </select>
+        <button onclick="checkVisa()">Check Visa</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function checkVisa() {
+            // Get the selected country
+            var country = document.getElementById("country").value;
+            var resultDiv = document.getElementById("result");
+            
+            // Clear previous results
+            resultDiv.textContent = "";
+            resultDiv.className = "";
+            
+            // Check if a country was selected
+            if (!country) {
+                resultDiv.textContent = "Please select a country.";
+                resultDiv.className = "error";
+                return;
+            }
+            
+            // Determine the visa requirement message
+            var message;
+            switch(country) {
+                case "USA":
+                    message = "Visa required for most applicants.";
+                    break;
+                case "Canada":
+                    message = "Visa required unless you have an eTA.";
+                    break;
+                case "India":
+                    message = "Visa required before travel.";
+                    break;
+                case "UK":
+                    message = "Visa depends on the duration of stay.";
+                    break;
+                case "Australia":
+                    message = "eVisa available for eligible travelers.";
+                    break;
+                default:
+                    message = "Please select a valid country.";
+            }
+            
+            // Display the result
+            resultDiv.textContent = message;
+            resultDiv.className = "success";
         }
     </script>
 </body>
