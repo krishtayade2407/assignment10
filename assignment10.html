@@ -3,138 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Easy Visa Checker</title>
+    <title>Visa Requirement Checker</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        
-        .visa-box {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            width: 350px;
-            text-align: center;
-        }
-        
-        h1 {
-            color: #2c3e50;
-            margin-top: 0;
-        }
-        
-        select {
-            width: 100%;
-            padding: 10px;
-            margin: 15px 0;
-            border: 2px solid #3498db;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        
-        button:hover {
-            background-color: #2980b9;
-        }
-        
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            display: none;
-        }
-        
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        select, input, button { display: block; margin: 10px 0; padding: 8px; }
+        .error { color: red; }
     </style>
 </head>
 <body>
-    <div class="visa-box">
-        <h1>Visa Requirement Checker</h1>
-        
-        <select id="countrySelect">
-            <option value="">-- Select Your Country --</option>
-            <option value="USA">United States (USA)</option>
-            <option value="Canada">Canada</option>
-            <option value="India">India</option>
-            <option value="UK">United Kingdom (UK)</option>
-            <option value="Australia">Australia</option>
+    <h2>Check Visa Requirement (Instant)</h2>
+    <select id="countrySelect">
+        <option value="">Select a country</option>
+        <option value="U">USA</option>
+        <option value="C">Canada</option>
+        <option value="I">India</option>
+        <option value="UK">UK</option>
+        <option value="AUS">Australia</option>
+    </select>
+    <button onclick="checkVisaWithPHP()">Check Visa (via PHP)</button>
+    <p id="result"></p>
+
+    <h2>Check Visa Requirement (Form Submission)</h2>
+    <form action="visa_check.php" method="POST">
+        <select name="country">
+            <option value="">Select a country</option>
+            <option value="U">USA</option>
+            <option value="C">Canada</option>
+            <option value="I">India</option>
+            <option value="UK">UK</option>
+            <option value="AUS">Australia</option>
         </select>
-        
-        <button onclick="checkVisa()">Check Visa Requirements</button>
-        
-        <div id="result"></div>
-    </div>
+        <button type="submit">Submit</button>
+    </form>
+    
+    <h2>Visa Application Form</h2>
+    <form id="visaForm" onsubmit="return validateForm()">
+        <input type="text" id="name" placeholder="Enter your name">
+        <input type="text" id="passport" placeholder="Enter passport number (8-10 characters)">
+        <select id="visaCountry">
+            <option value="">Select a country</option>
+            <option value="U">USA</option>
+            <option value="C">Canada</option>
+            <option value="I">India</option>
+            <option value="UK">UK</option>
+            <option value="AUS">Australia</option>
+        </select>
+        <button type="submit">Apply for Visa</button>
+        <p id="visaMessage"></p>
+    </form>
 
     <script>
-        // This function checks the visa requirements
-        function checkVisa() {
-            // Get the selected country from the dropdown
-            const countrySelect = document.getElementById("countrySelect");
-            const selectedCountry = countrySelect.value;
-            
-            // Get the result div where we'll show the message
-            const resultDiv = document.getElementById("result");
-            
-            // First check if no country was selected
-            if (selectedCountry === "") {
-                resultDiv.textContent = "Please select a country first!";
-                resultDiv.className = "error";
-                resultDiv.style.display = "block";
+        function checkVisaWithPHP() {
+            const country = document.getElementById("countrySelect").value;
+
+            if (!country) {
+                document.getElementById("result").innerText = "Please select a country.";
                 return;
             }
+
+            fetch("visa_check.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: "country=" + encodeURIComponent(country),
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("result").innerText = data;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+
+        function validateForm() {
+            const name = document.getElementById("name").value.trim();
+            const passport = document.getElementById("passport").value.trim();
+            const country = document.getElementById("visaCountry").value;
+            const messageElem = document.getElementById("visaMessage");
             
-            // Now check the visa requirements for each country
-            let visaMessage;
-            
-            if (selectedCountry === "USA") {
-                visaMessage = "Visa required for most applicants.";
-            } 
-            else if (selectedCountry === "Canada") {
-                visaMessage = "Visa required unless you have an eTA (Electronic Travel Authorization).";
-            } 
-            else if (selectedCountry === "India") {
-                visaMessage = "Visa required before travel. Apply at least 2 weeks in advance.";
-            } 
-            else if (selectedCountry === "UK") {
-                visaMessage = "Visa depends on the duration of stay. Check specific requirements.";
-            } 
-            else if (selectedCountry === "Australia") {
-                visaMessage = "eVisa available for eligible travelers. Apply online.";
+            if (!name || !passport || !country) {
+                messageElem.innerText = "All fields are required!";
+                messageElem.className = "error";
+                return false;
             }
-            else {
-                visaMessage = "Country not recognized. Please select from the list.";
+            
+            if (passport.length < 8 || passport.length > 10) {
+                messageElem.innerText = "Invalid passport number!";
+                messageElem.className = "error";
+                return false;
             }
             
-            // Show the result
-            resultDiv.textContent = visaMessage;
-            resultDiv.className = "success";
-            resultDiv.style.display = "block";
+            messageElem.innerText = "Visa application submitted successfully!";
+            messageElem.className = "success";
+            return true;
         }
     </script>
 </body>
